@@ -1,33 +1,31 @@
-import React from 'react';
-import { Redirect } from 'react-router-dom';
-import { connect } from 'react-redux';
-import Question from './Question';
+import React, { Fragment } from "react";
+import { Redirect } from "react-router-dom";
+import { connect } from "react-redux";
+import Ques from "./Question";
 
-function QuestionPage(props) {
-  const { id, questions } = props;
-  const question = questions[id];
+const QuestionPage = (props) => {
+  const { id, questions } = props,
+    ques = questions[id];
 
-  if(question == null) {
-    return <Redirect from='*' to='/not-found' />
+  if (ques == null) {
+    return <Redirect from='*' to='/not-found' />;
   }
 
   return (
-    <div>
+    <Fragment>
       <h3 className='center'>Question</h3>
-      {question &&
-        <Question question={question} />
-      }
-    </div>
+      {ques && <Ques question={ques} />}
+    </Fragment>
   );
-}
+};
 
-function mapStateToProps({ authedUser, questions }, props) {
+const mapStateToProps = ({ questions }, props) => {
   const { id } = props.match.params;
-  
+
   return {
     id,
     questions,
   };
-}
+};
 
 export default connect(mapStateToProps)(QuestionPage);

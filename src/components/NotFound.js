@@ -1,13 +1,15 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
+import React, { Component, Fragment } from "react";
+import { connect } from "react-redux";
 
 class NotFound extends Component {
   render() {
     return (
-      <div>
-        <h3 className='center'>404 / Not Found</h3>
-        
-      </div>
+      <Fragment>
+        <h3 className='center'>
+          404, Sorry the route you are looking for is not avalaible. please go
+          home
+        </h3>
+      </Fragment>
     );
   }
 }
@@ -18,4 +20,4 @@ function mapStateToProps({ users }) {
   };
 }
 
-export default connect(mapStateToProps)(NotFound)
+export default connect(mapStateToProps)(NotFound);

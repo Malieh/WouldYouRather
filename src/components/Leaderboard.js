@@ -1,30 +1,27 @@
-import React from 'react';
-import { connect } from 'react-redux';
-
+import { connect } from "react-redux";
+import React, { Fragment } from "react";
 function Leaderboard(props) {
-  const { users } = props;
-  const userArray = Object.keys(users).map((key) => users[key]);
-  // sort from most to least answered
-  const sortedUserArray = userArray.sort((a, b) => {
-    const sumA = Object.keys(a.answers).length + a.questions.length;
-    const sumB = Object.keys(b.answers).length + b.questions.length;
-    return sumB -sumA;
-  })
+  const { users } = props,
+    userArray = Object.keys(users).map((key) => users[key]),
+    sortedUser = userArray.sort((a, b) => {
+      return (
+        Object.keys(b.answers).length +
+        b.questions.length -
+        Object.keys(a.answers).length +
+        a.questions.length
+      );
+    });
 
   return (
-    <div>
+    <Fragment>
       <h3 className='center'>Leaderboard</h3>
-      <ul className='user-list'>
-        {sortedUserArray.map((user) => (
+      <ul className='u-list'>
+        {sortedUser.map((user) => (
           <li key={user.id}>
-            <div className='user'>
-              <img
-                src={user.avatarURL}
-                alt={`Avatar of ${user.name}`}
-                className='avatar'
-              />
+            <div className='u'>
+              <img src={user.avatarURL} className='avatar' />
               <span>{user.name}</span>
-              <div className='user-stats'>
+              <div className='u-stats'>
                 <p>Asked: {user.questions.length}</p>
                 <p>Answered: {Object.keys(user.answers).length}</p>
               </div>
@@ -32,7 +29,7 @@ function Leaderboard(props) {
           </li>
         ))}
       </ul>
-    </div>
+    </Fragment>
   );
 }
 
@@ -42,4 +39,4 @@ function mapStateToProps({ users }) {
   };
 }
 
-export default connect(mapStateToProps)(Leaderboard)
+export default connect(mapStateToProps)(Leaderboard);

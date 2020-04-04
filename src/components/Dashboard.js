@@ -1,58 +1,59 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import Question from './Question';
+import React, { Component, Fragment } from "react";
 
+import Question from "./Question";
+import { connect } from "react-redux";
 class Dashboard extends Component {
   state = {
-    showAnswered: false,
-  }
+    answered: false,
+  };
 
-  handleFilterClicked = function(answered) {
-    this.setState(function() {
+  handleFilterClick = function (answered) {
+    this.setState(function () {
       return {
-        showAnswered: answered
+        answered,
       };
     });
-  }
+  };
 
   render() {
-    const { showAnswered } = this.state;
-    const { authedUser, questions } = this.props;
-    const questionsArray = Object.keys(questions).map((key) => questions[key]);
-    const filteredQuestions = questionsArray.filter(function(question) {
-      const contains = (
-        question.optionOne.votes.indexOf(authedUser) > -1 ||
-        question.optionTwo.votes.indexOf(authedUser) > -1
+    const { answered } = this.state,
+      { authedUser, questions } = this.props,
+      quesArray = Object.keys(questions).map((key) => questions[key]),
+      filteredQues = quesArray.filter(function (question) {
+        const contains =
+          question.optionTwo.votes.indexOf(authedUser) > -1 ||
+          question.optionOne.votes.indexOf(authedUser) > -1;
+        return answered ? contains : !contains;
+      }),
+      sortedQues = filteredQues.sort(
+        (first, second) => second.timestamp - first.timestamp
       );
-      return showAnswered ? contains : !contains;
-    });
-    const sortedQuestions = filteredQuestions.sort((a, b) => b.timestamp - a.timestamp);
 
     return (
-      <div>
+      <Fragment>
         <h3 className='center'>Dashboard</h3>
-        <div className='btn-group'>
+        <div className='b-g'>
           <button
-            className={!showAnswered ? 'btn-lft active' : 'btn-lft'}
-            onClick={(event) => this.handleFilterClicked(false)}
+            className={!answered ? "b-l active" : "b-l"}
+            onClick={(event) => this.handleFilterClick(false)}
           >
             Unanswered
           </button>
           <button
-            className={showAnswered ? 'btn-rght active' : 'btn-rght'}
-            onClick={(event) => this.handleFilterClicked(true)}
+            className={answered ? "br active" : "b-r"}
+            onClick={(event) => this.handleFilterClick(true)}
           >
             Answered
           </button>
         </div>
-        <ul className='question-list'>
-          {sortedQuestions.map((question) => (
+        <ul className='q-l'>
+          {sortedQues.map((question) => (
             <li key={question.id}>
               <Question question={question} />
             </li>
           ))}
         </ul>
-      </div>
+      </Fragment>
     );
   }
 }
@@ -65,4 +66,4 @@ function mapStateToProps({ authedUser, questions, users }) {
   };
 }
 
-export default connect(mapStateToProps)(Dashboard)
+export default connect(mapStateToProps)(Dashboard);

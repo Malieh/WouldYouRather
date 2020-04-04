@@ -1,16 +1,18 @@
-import { ANSWER_QUESTION } from '../actions/questions';
+import { ANSWER_QUESTION } from "../actions/questions";
 
-export default function checker(store) {
-  return function(next) {
-    return function(action) {
+const checker =(store) =>{
+  return function (next) {
+    return function (action) {
       if (action.type === ANSWER_QUESTION) {
-        const users = store.getState().users;
-        const answers = Object.keys(users[action.authedUser].answers);
+        const users = store.getState().users,
+          answers = Object.keys(users[action.authedUser].answers);
         if (answers.indexOf(action.qid) > -1) {
-          return alert('You can only answer a question once.');
+          return alert("Already answered. You canonly answer 1 time.");
         }
       }
       return next(action);
-    }
+    };
   };
 }
+
+export default  checker

@@ -1,75 +1,73 @@
-import React, { Component } from 'react';
-import { Redirect, withRouter } from 'react-router-dom';
-import { connect } from 'react-redux';
-import { setAuthedUser, clearAuthedUser } from '../actions/authedUser';
+import { setAuthedUser, clearAuthedUser } from "../actions/authedUser";
+import React, { Component } from "react";
 
+import { connect } from "react-redux";
+import { Redirect, withRouter } from "react-router-dom";
 class Login extends Component {
   state = {
+    home: false,
     userId: null,
-    toHome: false,
-  }
+  };
 
-  handleSelectionChanged = function(event) {
-    const userId = event.target.value;
-
-    this.setState(function(previousState) {
+  handleSelectChange = (e) => {
+    const userId = e.target.value;
+    this.setState(function (previousState) {
       return {
         ...previousState,
         userId,
       };
     });
-  }
+  };
 
-  handleLogin = function(event) {
-    const { userId } = this.state;
+  handleLogin = () => {
     const { dispatch } = this.props;
-
+    const { userId } = this.state;
     dispatch(setAuthedUser(userId));
-
-    this.setState(function(previousState) {
+    this.setState(function (previousState) {
       return {
         ...previousState,
-        toHome: true,
+        home: true,
       };
     });
-  }
+  };
 
   componentDidMount() {
-    this.props.dispatch(clearAuthedUser())
+    this.props.dispatch(clearAuthedUser());
   }
 
   render() {
-    // const { userId, toHome } = this.state
-    const { userId, toHome } = this.state;
-    const { history, users } = this.props;
-    const selected = userId ? userId : -1;
-    const avatar = userId ? users[userId].avatarURL : 'placeholder.jpg';
+    const { userId, home } = this.state,
+      { history, users } = this.props,
+      selected = userId ? userId : -1,
+      avatar = userId ? users[userId].avatarURL : "avater.jpg";
 
-
-    if(toHome) {
+    if (home) {
       const redirect = history.location.state;
       if (redirect != null) {
-        return <Redirect to={redirect} push={true} />
+        return <Redirect to={redirect} push={true} />;
       }
-      return <Redirect to='/' />
+      return <Redirect to='/' />;
     }
 
     return (
       <div>
         <h3 className='center'>Login</h3>
         <div className='login-box'>
-          <span>Please select a user and press the login button.</span>
-          <div className='user-select'>
-           <img
-              src={avatar}
-              alt={`Avatar of ${userId}`}
-              className='avatar'
-            />
-            <select value={selected} onChange={(event) => this.handleSelectionChanged(event)}>
-              <option value={-1} disabled>Select user...</option>
-              {Object.keys(users).map(function(key) {
+          <span>Select user and login</span>
+          <div className='u-select'>
+            <img src={avatar} className='avatar' />
+            <select
+              value={selected}
+              onChange={(event) => this.handleSelectChange(event)}
+            >
+              <option value={-1} disabled>
+                Select user
+              </option>
+              {Object.keys(users).map(function (key) {
                 return (
-                  <option value={users[key].id} key={key}>{users[key].id}</option>
+                  <option value={users[key].id} key={key}>
+                    {users[key].id}
+                  </option>
                 );
               })}
             </select>
@@ -77,9 +75,9 @@ class Login extends Component {
           <button
             className='btn'
             disabled={userId === null}
-            onClick={(event) => this.handleLogin(event)}
+            onClick={(e) => this.handleLogin(e)}
           >
-            Login
+            login
           </button>
         </div>
       </div>
@@ -93,6 +91,4 @@ function mapStateToProps({ users }) {
   };
 }
 
-export default withRouter(connect(mapStateToProps)(Login))
-
-
+export default withRouter(connect(mapStateToProps)(Login));

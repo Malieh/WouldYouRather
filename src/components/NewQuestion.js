@@ -1,48 +1,43 @@
-import React, { Component } from 'react';
-import { Redirect } from 'react-router-dom';
-import { connect } from 'react-redux';
-import { handleAddQuestion } from '../actions/questions';
+import React, { Component } from "react";
+import { Redirect } from "react-router-dom";
+import { connect } from "react-redux";
+import { handleAddQuestion } from "../actions/questions";
 
 class NewQuestion extends Component {
   state = {
-    optionOne: '',
-    optionTwo: '',
-    toHome: false,
-  }
+    option1: "",
+    option2: "",
+    home: false,
+  };
 
-  handleChange = function(event, optionIndex) {
-    const text = event.target.value;
-
-    this.setState(function(previousState) {
+  handleChange = (e, optionIndex) => {
+    const text = e.target.value;
+    this.setState((previousState) => {
       return optionIndex === 1
-        ? { ...previousState, 'optionOne': text }
-        : { ...previousState, 'optionTwo': text };
+        ? { ...previousState, option1: text }
+        : { ...previousState, option2: text };
     });
-  }
+  };
 
-  handleSubmit = function(event) {
-    event.preventDefault();
-
-    const { optionOne, optionTwo } = this.state;
-    const { dispatch } = this.props;
-    dispatch(handleAddQuestion(optionOne, optionTwo));
-
-    this.setState(function(previousState) {
+  handleSubmit = (e) => {
+    e.preventDefault();
+    const { dispatch } = this.props,
+      { option1, option2 } = this.state;
+    dispatch(handleAddQuestion(option1, option2));
+    this.setState((previousState) => {
       return {
         ...previousState,
-        toHome: true,
+        home: true,
       };
-    })
-  }
+    });
+  };
 
   render() {
-    const { optionOne, optionTwo, toHome } = this.state;
-    const { authedUser, users } = this.props;
-    console.log(authedUser)
-    console.log(users)
+    const { authedUser, users } = this.props,
+      { option1, option2, home } = this.state;
 
-    if (toHome === true) {
-      return <Redirect to='/' />
+    if (home === true) {
+      return <Redirect to='/' />;
     }
 
     return (
@@ -51,37 +46,28 @@ class NewQuestion extends Component {
         <div className='question'>
           <img
             src={`/${users[authedUser].avatarURL}`}
-            alt={`Avatar of ${authedUser}`}
             className='avatar'
           />
-          <span>
-            Would You Rather...
-          </span>
-          <form
-            onSubmit={(event) => this.handleSubmit(event)}
-          >
-            <div className="option">
+          <span>Would You Rather</span>
+          <form onSubmit={(event) => this.handleSubmit(event)}>
+            <div className='option'>
               <textarea
-                value={optionOne}
+                value={option1}
                 onChange={(event) => this.handleChange(event, 1)}
               />
-              <span className='hint'>
-                Option One
-              </span>
+              <span className='hint'>Option One</span>
             </div>
-            <div className="option opt-offset">
+            <div className='option opt-offset'>
               <textarea
-                value={optionTwo}
-                onChange={(event) => this.handleChange(event, 2)}
+                value={option2}
+                onChange={(e) => this.handleChange(e, 2)}
               />
-              <span className='hint'>
-                Option Two
-              </span>
+              <span className='hint'>Option Two</span>
             </div>
             <button
               className='btn'
               type='submit'
-              disabled={optionOne === '' || optionTwo === ''}
+              disabled={option1 === "" || option2 === ""}
             >
               Submit
             </button>
@@ -92,11 +78,11 @@ class NewQuestion extends Component {
   }
 }
 
-function mapStateToProps({ authedUser, users }) {
+const mapStateToProps = ({ users, authedUser }) => {
   return {
-    authedUser,
     users,
+    authedUser,
   };
-}
+};
 
-export default connect(mapStateToProps)(NewQuestion)
+export default connect(mapStateToProps)(NewQuestion);
